@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+    <title>Code Report</title>
+    <head>
+        <style>
+            body { font-family: Arial, sans-serif; margin: 40px; }
+            .language { margin-bottom: 40px; }
+            .bar {
+                height: 16px;
+                background-color: #4CAF50;
+            }
+            .bar-container {
+                background: #eee;
+                width: 300px;
+            }
+            table {
+                border-collapse: collapse;
+                margin-top: 10px;
+            }
+            th, td {
+                padding: 6px 10px;
+                border: 1px solid #ddd;
+            }
+        </style>
+    </head>
+<body>
+    <h1>{{report.project_name}} Code Composition </h1>
+    <p>Total characters: {{report.total_chars}}</report></p>
+
+    {% for lang in report.languages %}
+    <div class = "language">
+        <h2>
+            {{lang.name}}
+            {{lang.pct_total | round(2)}}%
+        </h2>
+
+        <div class = "bar-container">
+            <div class="bar" style="width: {{lang.pct_total}}%"></div>
+        </div>
+
+        <p>{{lang.chars}} characters</p>
+
+        <h3>Files</h3>
+
+        {% if lang.files %}
+        <table>
+            <thead>
+                <tr>
+                    <th>File</th>
+                    <th>Chars</th>
+                    <th>% of Project</th>
+                    <th>% of {{lang.name}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for file in lang.files %}
+                <tr>
+                    <td>{{ file.path}}</td>
+                    <td>{{file.chars}}</td>
+                    <td>{{file.pct_total | round(2)}}%</td>
+                    <td>{{file.pct_lang | round(2)}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+            <p>No files found.</p>
+        {% endif %}
+    </div>
+    {% endfor %}
+</body>
+</html>
