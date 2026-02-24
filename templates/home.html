@@ -1,12 +1,217 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-    <title>Code Report Generator</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Repo Language Report</title>
+  <style>
+    :root{
+      --bg:#0b1020; --card:#111a33; --text:#e8ecff; --muted:#a9b2d6; --line:#223055;
+      --accent:#7aa2ff; --good:#4ade80; --warn:#fbbf24;
+      --radius:18px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family:var(--sans);
+      color:var(--text);
+      background: radial-gradient(1100px 700px at 15% -10%, #16265a 0%, var(--bg) 55%) fixed;
+    }
+    .wrap{ max-width: 980px; margin: 0 auto; padding: 32px 20px 44px; }
+    .topbar{
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      margin-bottom: 28px;
+    }
+    .brand{
+      display:flex; align-items:center; gap:10px;
+      font-weight:800; letter-spacing:.3px;
+    }
+    .logo{
+      width:34px; height:34px; border-radius:12px;
+      background: linear-gradient(135deg, var(--accent), var(--good));
+      box-shadow: 0 12px 30px rgba(0,0,0,.35);
+    }
+    .tag{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      color:var(--muted);
+      font-size:13px;
+      white-space:nowrap;
+    }
+
+    .hero{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+    @media (min-width: 900px){
+      .hero{ grid-template-columns: 1.15fr .85fr; align-items: start; }
+    }
+    h1{
+      margin:0;
+      font-size: 38px;
+      line-height: 1.05;
+      letter-spacing: .2px;
+    }
+    .sub{
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 15px;
+      max-width: 62ch;
+    }
+    .card{
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.02));
+      box-shadow: 0 18px 45px rgba(0,0,0,.28);
+      padding: 16px;
+    }
+
+    form{ display:flex; flex-direction:column; gap:10px; margin-top: 10px; }
+    label{ font-size:13px; color: var(--muted); }
+    .inputrow{
+      display:flex; gap:10px; flex-wrap:wrap;
+    }
+    input[type="url"]{
+      flex: 1 1 360px;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.22);
+      padding: 12px 12px;
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 13px;
+      outline: none;
+    }
+    input[type="url"]::placeholder{ color: rgba(233,236,255,.55); }
+    button{
+      border:0;
+      cursor:pointer;
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-weight: 700;
+      color: #071023;
+      background: linear-gradient(135deg, var(--accent), var(--good));
+      box-shadow: 0 14px 30px rgba(0,0,0,.35);
+    }
+    button:active{ transform: translateY(1px); }
+
+    .examples{
+      display:flex; flex-wrap:wrap; gap:8px;
+      margin-top: 10px;
+    }
+    .chip{
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      color: var(--muted);
+      border-radius:999px;
+      padding:8px 10px;
+      font-size:12px;
+      cursor:pointer;
+      user-select:none;
+    }
+    .chip:hover{ color: var(--text); border-color: rgba(255,255,255,.18); }
+
+    .mini{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .mini h3{ margin: 0 0 6px; font-size: 14px; }
+    .mini p{ margin:0; color: var(--muted); font-size: 13px; line-height: 1.45; }
+    .k{
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text);
+      background: rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius: 10px;
+      padding: 2px 8px;
+      display:inline-block;
+      margin-top: 8px;
+    }
+
+    .notice{
+      margin-top: 10px;
+      border-radius: 14px;
+      border: 1px solid rgba(251,191,36,.35);
+      background: rgba(251,191,36,.10);
+      color: #ffe9b3;
+      padding: 10px 12px;
+      font-size: 13px;
+    }
+
+    footer{
+      margin-top: 22px;
+      color: var(--muted);
+      font-size: 12px;
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    a{ color: inherit; }
+  </style>
 </head>
-    <body>
-        <h1>Code Report Generator</h1>
-        <p>
-            Try: 127.0.0.1:5000/(GITHUB URL)
+
+<body>
+  <div class="wrap">
+
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div>Project Cartographer</div>
+      </div>
+      <div class="tag">Repo → HTML report</div>
+    </div>
+
+    <section class="hero">
+      <div>
+        <h1>Turn a repository into a convenient report.</h1>
+        <p class="sub">
+          Paste a GitHub URL and generate a clean, shareable HTML summary.
         </p>
-    </body>
+
+        <div class="card" style="margin-top:16px;">
+          <form method="get" action="/">
+            <label for="url">GitHub repository URL</label>
+
+            <div class="inputrow">
+              <input
+                id="url"
+                name="url"
+                type="url"
+                required
+                placeholder="https://github.com/owner/repo"
+                value=""
+                autocomplete="off"
+              />
+              <button type="submit">Generate report</button>
+            </div>
+
+            <div class="examples">
+              <span class="chip" onclick="document.getElementById('url').value='https://github.com/pallets/flask'">pallets/flask</span>
+              <span class="chip" onclick="document.getElementById('url').value='https://github.com/pallets/jinja'">pallets/jinja</span>
+              <span class="chip" onclick="document.getElementById('url').value='https://github.com/psf/requests'">psf/requests</span>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div>Built with Flask + Jinja</div>
+      <div style="opacity:.9;">Tip: bookmark reports once generated.</div>
+    </footer>
+
+  </div>
+</body>
 </html>

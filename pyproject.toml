@@ -1,7 +1,7 @@
 [project]
-name = "project-breakdown"
+name = "Langoscope"
 version = "0.1.0"
-description = "Add your description here"
+description = "Tool for generating git project breakdowns"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
